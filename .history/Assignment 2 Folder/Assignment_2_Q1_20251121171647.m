@@ -32,6 +32,7 @@ Ki = 0; Kd = 0;
 for i = 1:4
     Kp = Kp_vals(i);
     SYSz = pid_cl(Kp,Ki,Kd);
+    
     y = lsim(SYSz, r, t);
 
     subplot(4,1,i)

@@ -14,7 +14,6 @@ Gz = c2d(Gps, T, 'zoh');
 % Time vector: n samples
 t = 0:T:(n-1)*T;
 r = ones(size(t));     % unit step input
-
 %% Helper: function to get closed-loop system for given Kp, Ki, Kd
 pid_cl = @(Kp,Ki,Kd) ...
     feedback( ...
@@ -24,14 +23,15 @@ pid_cl = @(Kp,Ki,Kd) ...
            [T -T 0], T) ...
         * Gz, ...   % <-- multiply by plant *inside* feedback
         1);
-
 %% 1) Increasing Kp (P control, Ki = Kd = 0)  ----------------
 figure(1)
 Kp_vals = [1 2 3 30];
 Ki = 0; Kd = 0;
+
 for i = 1:4
     Kp = Kp_vals(i);
     SYSz = pid_cl(Kp,Ki,Kd);
+    
     y = lsim(SYSz, r, t);
 
     subplot(4,1,i)
