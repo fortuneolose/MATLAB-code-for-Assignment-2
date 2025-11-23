@@ -16,7 +16,7 @@ for i = 1:length(p)
 end
 
 % Number of samples to simulate
-N = 1200;   % adjust to match how long you want the plot
+N = 25;   % adjust to match how long you want the plot
 
 %% Unit impulse response (discrete-time)
 [y_imp, t_imp] = impulse(Gz, N);   % t_imp already in seconds (k*T)
