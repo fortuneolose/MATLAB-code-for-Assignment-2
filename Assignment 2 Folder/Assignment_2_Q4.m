@@ -1,3 +1,5 @@
+clc; clear; close all;
+
 % Discrete-time plant
 Ts  = 1;                            % sample period
 num = [2 13 -7];                    % G(z) = (2 z^-1 + 13 z^-2 - 7 z^-3) / ...
@@ -29,29 +31,30 @@ for i = 1:4
     Acl = A - B*K;
 
     % Precompensator N for unit steady-state gain y/r
-    % (first form system with input v, then scale)
     sys_tmp = ss(Acl,B,C,D,Ts);     % v as input
     N = 1/dcgain(sys_tmp);          % choose N so dcgain from v to y is 1
 
     % Closed-loop system from reference r(k) to output y(k)
     sys_cl = ss(Acl,B*N,C,D,Ts);
 
-    % Simulate closed-loop output
-    [y, t, x] = lsim(sys_cl, r, k);  % zero initial condition by default
-
-    % Recover actual control input u(k) = −K x(k) + N r(k)
-    u = zeros(length(t),1);
-    for j = 1:length(t)
-        u(j) = -K * x(j,:).' + N * r(j);
-    end
+    % Simulate closed-loop output (zero initial condition)
+    [y, t, x] = lsim(sys_cl, r, k);
 
     % Plot
     subplot(2,2,i);
-    stem(t, y, 'filled'); hold on;
-    plot(t, u);
+
+    % Discrete output samples in red
+    stem(t, y, 'r', 'filled'); hold on;
+
+    % Reference as green dashed line (NOT stem)
+    plot(t, r, 'g--', 'LineWidth', 1.2);
+
+    grid on;
     if i == 4
         xlabel('sample number, k');
     end
+    ylabel('r(k) & y(k)');
+
     title(sprintf('eigenvalues at %0.1f, %0.1f, %0.1f', lam(1), lam(2), lam(3)));
-    legend('output y[k]', 'input u[k]', 'Location', 'best');
+    legend('System output, y(k)', 'system input, r(k)', 'Location', 'best');
 end
